@@ -6,11 +6,22 @@ export function valida(input) {
     }
 
     if(input.validity.valid) {
-        input.parentElement.classList.remove('input-container-invalido')
+        input.parentElement.classList.remove('input-container--invalido')
+        input.parentElement.querySelector('.input-mensagem-erro').innerHTML = ''
     } else {
         input.parentElement.classList.add('input-container--invalido')
+        input.parentElement.querySelector('.input-mensagem-erro').innerHTML = 
+        mostraMensagemDeErro(tipoDeInput, input)
+
     }
 }
+
+const tiposDeErro = [
+    'valueMissing',
+    'typeMismatch',
+    'patternMismatch',
+    'customError'
+]
 
 const mensagensDeErro = {
     nome: {
@@ -36,6 +47,17 @@ const validadores = {
     dataNascimento:input => validaDataNascimento(input)
 }
 
+function mostraMensagemDeErro(tipoDeInput, input) {
+    let mensagem = ''
+    tiposDeErro.forEach(erro => {
+        if(input.validity [erro]) {
+            mensagem = mensagensDeErro[tipoDeInput][erro]
+        }
+    })
+
+    return mensagem
+}
+
 function validaDataNascimento(input) {
     const dataRecebida = new Date(input.value)
     let mensagem = ''
@@ -50,4 +72,7 @@ function validaDataNascimento(input) {
 function maiorQue18(data) {
     const dataAtual = new Date ()
     const dataMais18 = new Date(data.getUTCFullYear() + 18, data.getUTCMonth(), data.getUTCDate())
+
+    return dataMais18 <= dataAtual
+
 }
